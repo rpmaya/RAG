@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ejercicios prácticos · Unidad 5 — ML2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<link rel="stylesheet" href="../assets/u5.css" />
+</head>
+<body>
+
+<div class="reading-progress" aria-hidden="true">
+  <div class="reading-progress__bar" id="readingBar"></div>
+</div>
+
+<nav class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <a href="unidad_5.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;color:inherit">
+        <span class="badge">ML2 · U5</span>
+      </a>
+      <span>Ejercicios prácticos</span>
+    </div>
+    <div class="right">
+      <ul>
+        <li><a href="unidad_5.html"><i class="fa-solid fa-arrow-left"></i> Unidad 5</a></li>
+        <li><a href="unidad_5.html#sesion-1">Sesión 1</a></li>
+        <li><a href="unidad_5.html#sesion-2">Sesión 2</a></li>
+        <li><a href="unidad_5.html#sesion-3">Sesión 3</a></li>
+        <li><a href="ejercicios.html">Ejercicios</a></li>
+        <li><a href="practica.html">Práctica</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <span class="pill"><i class="fa-solid fa-list-check"></i> Unidad 5 · Ejercicios prácticos</span>
+  <h1>Ejercicios prácticos<br/>Retrieval-Augmented Generation</h1>
+  <p class="lead">Catálogo de ejercicios prácticos de la Unidad 5: desde fundamentos de RAG y embeddings hasta GraphRAG con Neo4j. Material complementario al contenido teórico.</p>
+  <div class="meta">
+    <div class="meta-item"><i class="fa-solid fa-layer-group"></i> Múltiples niveles</div><div class="meta-item"><i class="fa-solid fa-code"></i> Python · n8n · Neo4j</div><div class="meta-item"><i class="fa-regular fa-clock"></i> Sin tiempo límite</div>
+  </div>
+</header>
+
+<div class="main-layout">
+  <main class="main-content">
+    <section class="content reveal" id="contenido" data-toc-label="Ejercicios prácticos">
+      <div class="section-header">
+        <div class="num"><i class="fa-solid fa-list-check"></i></div>
+        <h2>Ejercicios prácticos</h2>
+        <span class="tag tag-ejer">Práctica guiada</span>
+      </div>
+      <div class="markdown-body" id="md-render-main"></div>
+    </section>
+  </main>
+
+  <aside class="sidebar-toc" id="sidebarToc" aria-label="Índice de contenidos">
+    <h4><i class="fa-solid fa-list"></i> En esta página</h4>
+    <ul id="sidebarTocList"></ul>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h5>Curso</h5>
+      <ul>
+        <li><a href="https://github.com/rpmaya/ml2_online" target="_blank" rel="noopener">Repositorio ml2_online</a></li>
+        <li><a href="https://github.com/rpmaya/ml2_code" target="_blank" rel="noopener">Repositorio ml2_code</a></li>
+        <li><a href="https://github.com/rpmaya/ml2_clases" target="_blank" rel="noopener">Repositorio ml2_clases</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Esta unidad</h5>
+      <ul>
+        <li><a href="unidad_5.html">Material completo</a></li>
+        <li><a href="unidad_5.html#sesion-1">Sesión 1 · Fundamentos</a></li>
+        <li><a href="unidad_5.html#sesion-2">Sesión 2 · Pipeline</a></li>
+        <li><a href="unidad_5.html#sesion-3">Sesión 3 · GraphRAG</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Páginas standalone</h5>
+      <ul>
+        <li><a href="ejercicios.html"><i class="fa-regular fa-file-lines"></i> Ejercicios prácticos</a></li>
+        <li><a href="practica.html"><i class="fa-solid fa-flask"></i> Práctica evaluable</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    Curso <strong>Aprendizaje Automático II</strong> · Unidad 5 · Generado desde los archivos markdown del repositorio · Hecho con <span class="heart">♥</span>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" aria-label="Volver arriba">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script type="text/markdown" id="md-source" data-target="md-render-main">
+# Ejercicios Prácticos - Unidad 5
+## Retrieval-Augmented Generation (RAG): De los Fundamentos a la Implementación
+
+> Estos ejercicios cubren el ciclo completo de RAG: desde entender cómo funcionan los embeddings y el chunking, hasta implementar y evaluar un pipeline RAG funcional con LangChain.
+
+---
+
+## Ejercicio 1: Experimentación con Embeddings y Similitud Semántica
+
+### Metadata
+- **Duración estimada**: 30 minutos
+- **Tipo**: Programación
+- **Modalidad**: Individual
+- **Dificultad**: Intermedia
+- **Prerequisitos**: Conocimientos básicos de Python y numpy
+
+### Contexto
+Los embeddings son representaciones numéricas densas de texto que capturan su significado semántico. La calidad de un sistema RAG depende directamente de la calidad de sus embeddings: si frases con significado similar no producen vectores cercanos, la recuperación fallará. Este ejercicio permite experimentar de primera mano con embeddings, entender la similitud coseno y descubrir tanto las capacidades como las limitaciones de estos modelos.
+
+### Objetivo de Aprendizaje
+- Generar embeddings usando la API de OpenAI o sentence-transformers
+- Calcular e interpretar la similitud coseno entre vectores
+- Identificar patrones: sinonimia, paráfrasis, negación, cambio de idioma
+- Comprender las limitaciones de los embeddings para ciertos tipos de relaciones semánticas
+
+### Enunciado
+
+Escribe un programa en Python que genere embeddings para un conjunto de frases y analice las relaciones semánticas entre ellas mediante similitud coseno.
+
+### Paso 1: Configuración del entorno
+
+Elige **una** de las dos opciones:
+
+**Opcion A: OpenAI API** (requiere API key)
+```python
+from openai import OpenAI
+import numpy as np
+
+client = OpenAI()  # Usa OPENAI_API_KEY del entorno
+
+def get_embedding(text, model="text-embedding-3-small"):
+    """Genera el embedding de un texto usando OpenAI."""
+    response = client.embeddings.create(
+        input=text,
+        model=model
+    )
+    return np.array(response.data[0].embedding)
+```
+
+**Opcion B: Sentence-Transformers** (local, gratuito)
+```python
+from sentence_transformers import SentenceTransformer
+import numpy as np
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+def get_embedding(text, model=model):
+    """Genera el embedding de un texto usando sentence-transformers."""
+    return model.encode(text)
+```
+
+### Paso 2: Definir las frases de prueba
+
+Usa el siguiente conjunto de frases diseñado para explorar diferentes relaciones semánticas:
+
+```python
+frases = {
+    # Grupo 1: Frases semánticamente similares (paráfrasis)
+    "A1": "El gato se sentó en la alfombra",
+    "A2": "Un felino descansaba sobre el tapete",
+    "A3": "The cat sat on the mat",  # Misma idea, otro idioma
+
+    # Grupo 2: Frases sobre tecnología
+    "B1": "Python es un lenguaje de programación muy popular",
+    "B2": "JavaScript se usa mucho para desarrollo web",
+    "B3": "Los lenguajes de programación son herramientas esenciales",
+
+    # Grupo 3: Negación y contraste
+    "C1": "El restaurante tiene buena comida",
+    "C2": "El restaurante no tiene buena comida",
+    "C3": "La comida del restaurante es terrible",
+
+    # Grupo 4: Frases sin relación
+    "D1": "La fotosíntesis convierte luz solar en energía",
+    "D2": "El precio del petróleo subió un 5% ayer",
+}
+```
+
+### Paso 3: Generar embeddings y calcular similitudes
+
+```python
+from numpy import dot
+from numpy.linalg import norm
+
+def cosine_similarity(a, b):
+    """Calcula la similitud coseno entre dos vectores."""
+    return dot(a, b) / (norm(a) * norm(b))
+
+# Generar embeddings para todas las frases
+embeddings = {}
+for key, frase in frases.items():
+    embeddings[key] = get_embedding(frase)
+    print(f"[{key}] Embedding generado - dimensiones: {len(embeddings[key])}")
+
+# Calcular matriz de similitudes
+print("\n--- MATRIZ DE SIMILITUD COSENO ---\n")
+keys = list(frases.keys())
+print(f"{'':>4}", end="")
+for k in keys:
+    print(f"{k:>8}", end="")
+print()
+
+for i, ki in enumerate(keys):
+    print(f"{ki:>4}", end="")
+    for j, kj in enumerate(keys):
+        sim = cosine_similarity(embeddings[ki], embeddings[kj])
+        print(f"{sim:>8.3f}", end="")
+    print()
+```
+
+### Paso 4: Análisis de resultados
+
+Responde a las siguientes preguntas basándote en los resultados obtenidos:
+
+| Pregunta | Tu respuesta |
+|----------|-------------|
+| 1. ¿Cuál es la similitud entre A1 y A2 (paráfrasis en español)? ¿Es alta? | __________________ |
+| 2. ¿Cuál es la similitud entre A1 y A3 (misma idea, diferente idioma)? ¿Es comparable a A1-A2? | __________________ |
+| 3. ¿Los embeddings de B1, B2 y B3 forman un grupo coherente? ¿Son más similares entre sí que con otros grupos? | __________________ |
+| 4. ¿Cuál es la similitud entre C1 ("buena comida") y C2 ("no tiene buena comida")? ¿Es sorprendentemente alta o baja? | __________________ |
+| 5. ¿Los embeddings capturan bien la negación? Compara C1-C2 vs C1-C3. ¿Cuál debería ser más diferente semánticamente? | __________________ |
+| 6. ¿Las frases D1 y D2 tienen baja similitud con el resto de grupos, como esperarías? | __________________ |
+
+### Paso 5 (Bonus): Visualización 2D
+
+Si tienes tiempo, añade una visualización usando PCA:
+
+```python
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# Reducir a 2D
+vectors = np.array(list(embeddings.values()))
+pca = PCA(n_components=2)
+coords = pca.fit_transform(vectors)
+
+# Graficar
+plt.figure(figsize=(10, 8))
+colors = {'A': 'red', 'B': 'blue', 'C': 'green', 'D': 'orange'}
+for i, key in enumerate(keys):
+    grupo = key[0]
+    plt.scatter(coords[i, 0], coords[i, 1], c=colors[grupo], s=100, zorder=5)
+    plt.annotate(f"{key}: {frases[key][:30]}...",
+                 (coords[i, 0], coords[i, 1]),
+                 fontsize=8, ha='left', va='bottom')
+
+plt.title("Embeddings proyectados en 2D (PCA)")
+plt.xlabel("Componente 1")
+plt.ylabel("Componente 2")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig("embeddings_2d.png", dpi=150)
+plt.show()
+```
+
+---
+
+## Ejercicio 2: Laboratorio de Estrategias de Chunking
+
+### Metadata
+- **Duración estimada**: 25 minutos
+- **Tipo**: Programación
+- **Modalidad**: Individual
+- **Dificultad**: Intermedia
+- **Prerequisitos**: Conocimientos de Python, familiaridad básica con LangChain
+
+### Contexto
+El chunking (fragmentación del texto) es una etapa crítica y a menudo subestimada en un pipeline RAG. Un chunking demasiado grande puede incluir información irrelevante que confunda al LLM; uno demasiado pequeño puede perder el contexto necesario para una respuesta coherente. El solapamiento (overlap) entre chunks permite que la información no se "corte" en medio de una idea. Este ejercicio te permite experimentar de primera mano con diferentes configuraciones y desarrollar intuición sobre sus efectos.
+
+### Objetivo de Aprendizaje
+- Usar `RecursiveCharacterTextSplitter` de LangChain con diferentes configuraciones
+- Comprender el impacto del `chunk_size` y `chunk_overlap` en la fragmentación
+- Analizar cuándo se pierde contexto y cuándo se preserva
+- Desarrollar criterios para elegir la configuración óptima según el tipo de documento
+
+### Enunciado
+
+Experimenta con diferentes configuraciones de chunking sobre un documento de ejemplo y analiza los resultados.
+
+### Paso 1: Preparar el documento de ejemplo
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Documento de ejemplo: artículo sobre inteligencia artificial
+documento = """
+# Introducción a la Inteligencia Artificial
+
+La inteligencia artificial (IA) es una rama de la informática que busca crear sistemas
+capaces de realizar tareas que normalmente requieren inteligencia humana. Estas tareas
+incluyen el aprendizaje, el razonamiento, la percepción y la comprensión del lenguaje natural.
+
+## Historia de la IA
+
+El término "inteligencia artificial" fue acuñado por John McCarthy en 1956 durante la
+conferencia de Dartmouth. Sin embargo, las ideas sobre máquinas pensantes se remontan a
+mucho antes. Alan Turing, en 1950, propuso el famoso Test de Turing como criterio para
+determinar si una máquina puede exhibir comportamiento inteligente indistinguible del humano.
+
+Durante las décadas de 1960 y 1970, la IA experimentó un período de optimismo conocido
+como la "edad de oro". Los investigadores creían que la IA general estaba a pocas décadas
+de distancia. Sin embargo, las limitaciones computacionales y teóricas llevaron a los
+"inviernos de la IA", períodos de reducción de financiación e interés.
+
+## Aprendizaje Automático
+
+El aprendizaje automático (machine learning) es un subcampo de la IA que se centra en
+desarrollar algoritmos que permiten a las computadoras aprender de los datos sin ser
+programadas explícitamente. Los tres paradigmas principales son:
+
+1. Aprendizaje supervisado: el modelo aprende de ejemplos etiquetados.
+2. Aprendizaje no supervisado: el modelo descubre patrones en datos sin etiquetar.
+3. Aprendizaje por refuerzo: el modelo aprende mediante prueba y error con recompensas.
+
+## Deep Learning
+
+El deep learning o aprendizaje profundo utiliza redes neuronales con múltiples capas
+(de ahí "profundo") para aprender representaciones jerárquicas de los datos. Las
+arquitecturas más importantes incluyen:
+
+- Redes Neuronales Convolucionales (CNN): especializadas en procesamiento de imágenes.
+- Redes Neuronales Recurrentes (RNN): diseñadas para secuencias temporales.
+- Transformers: la arquitectura dominante actual para procesamiento de lenguaje natural,
+  introducida en el paper "Attention is All You Need" (2017).
+
+## Modelos de Lenguaje
+
+Los modelos de lenguaje grandes (LLMs) como GPT-4, Claude y Llama representan el estado
+del arte en procesamiento de lenguaje natural. Estos modelos se entrenan con cantidades
+masivas de texto y pueden generar texto coherente, traducir idiomas, resumir documentos
+y responder preguntas.
+
+La técnica de RAG (Retrieval-Augmented Generation) complementa estos modelos permitiéndoles
+acceder a información externa actualizada, reduciendo las alucinaciones y proporcionando
+respuestas más precisas y verificables.
+"""
+
+print(f"Longitud total del documento: {len(documento)} caracteres")
+print(f"Número de líneas: {len(documento.splitlines())}")
+```
+
+### Paso 2: Experimentar con diferentes configuraciones
+
+```python
+configuraciones = [
+    {"chunk_size": 100, "chunk_overlap": 0,  "nombre": "Muy pequeño, sin overlap"},
+    {"chunk_size": 100, "chunk_overlap": 20, "nombre": "Muy pequeño, con overlap"},
+    {"chunk_size": 300, "chunk_overlap": 0,  "nombre": "Mediano, sin overlap"},
+    {"chunk_size": 300, "chunk_overlap": 50, "nombre": "Mediano, con overlap"},
+    {"chunk_size": 500, "chunk_overlap": 50, "nombre": "Grande, con overlap pequeño"},
+    {"chunk_size": 500, "chunk_overlap": 100,"nombre": "Grande, con overlap grande"},
+    {"chunk_size": 1000,"chunk_overlap": 200,"nombre": "Muy grande, con overlap"},
+]
+
+for config in configuraciones:
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=config["chunk_size"],
+        chunk_overlap=config["chunk_overlap"],
+        separators=["\n\n", "\n", ". ", " ", ""]
+    )
+
+    chunks = splitter.split_text(documento)
+
+    print(f"\n{'='*70}")
+    print(f"Configuración: {config['nombre']}")
+    print(f"  chunk_size={config['chunk_size']}, chunk_overlap={config['chunk_overlap']}")
+    print(f"  Número de chunks: {len(chunks)}")
+    print(f"  Tamaño promedio: {sum(len(c) for c in chunks) / len(chunks):.0f} caracteres")
+    print(f"  Tamaño mínimo: {min(len(c) for c in chunks)} caracteres")
+    print(f"  Tamaño máximo: {max(len(c) for c in chunks)} caracteres")
+
+    # Mostrar los primeros 3 chunks
+    for i, chunk in enumerate(chunks[:3]):
+        print(f"\n  --- Chunk {i+1} ({len(chunk)} chars) ---")
+        lines = chunk.strip().split('\n')
+        if len(lines) <= 4:
+            print(f"  {chunk.strip()}")
+        else:
+            print(f"  {lines[0]}")
+            print(f"  {lines[1]}")
+            print(f"  ...")
+            print(f"  {lines[-1]}")
+```
+
+### Paso 3: Análisis comparativo
+
+Completa la siguiente tabla con los resultados de tus experimentos:
+
+| Configuración | N. Chunks | Tam. Promedio | ¿Se cortan ideas a mitad? | ¿Hay redundancia excesiva? |
+|--------------|-----------|---------------|---------------------------|---------------------------|
+| 100, overlap 0 | _____ | _____ | _____ | _____ |
+| 100, overlap 20 | _____ | _____ | _____ | _____ |
+| 300, overlap 0 | _____ | _____ | _____ | _____ |
+| 300, overlap 50 | _____ | _____ | _____ | _____ |
+| 500, overlap 50 | _____ | _____ | _____ | _____ |
+| 500, overlap 100 | _____ | _____ | _____ | _____ |
+| 1000, overlap 200 | _____ | _____ | _____ | _____ |
+
+### Preguntas de Reflexión
+
+1. ¿Con qué configuración se cortan más frases a mitad de una idea? ¿Por qué?
+2. ¿Cuál es el trade-off entre chunk_size pequeño y grande para la calidad de la búsqueda?
+3. ¿Por qué `RecursiveCharacterTextSplitter` usa una jerarquía de separadores (`\n\n`, `\n`, `. `, ` `)? ¿Qué pasaría si solo usara un separador?
+4. Si tu documento fuera código fuente Python en lugar de texto, ¿cambiarías los separadores? ¿Cuáles usarías?
+5. ¿Qué configuración elegirías para un documento legal con párrafos largos y densos? ¿Y para un FAQ con preguntas y respuestas cortas?
+
+---
+
+## Ejercicio 3: Pipeline RAG Completo con LangChain y Chroma
+
+### Metadata
+- **Duración estimada**: 40 minutos
+- **Tipo**: Hands-on
+- **Modalidad**: Individual
+- **Dificultad**: Intermedia
+- **Prerequisitos**: Python 3.8+ instalado, API key de OpenAI, comprensión de embeddings y chunking (ejercicios anteriores)
+
+### Contexto
+LangChain ofrece un control programático completo sobre cada componente del pipeline RAG. Esto es especialmente útil cuando necesitamos personalizar la lógica de chunking, aplicar filtros avanzados en la búsqueda, o integrar RAG en aplicaciones Python existentes. En este ejercicio implementaremos un pipeline RAG completo usando LangChain con Chroma como base de datos vectorial local (sin necesidad de servicios externos más allá de OpenAI para embeddings y generación).
+
+### Objetivo de Aprendizaje
+- Implementar un pipeline RAG funcional en Python usando LangChain
+- Cargar, dividir e indexar documentos en una base vectorial Chroma
+- Configurar la cadena de recuperación y generación (RetrievalQA)
+- Comparar respuestas con y sin contexto RAG
+
+### Enunciado
+
+### Paso 1: Preparar el entorno (5 min)
+
+Instala las dependencias necesarias:
+
+```bash
+pip install langchain langchain-openai langchain-community chromadb tiktoken
+```
+
+Configura la API key de OpenAI:
+
+```python
+import os
+os.environ["OPENAI_API_KEY"] = "tu-api-key-aqui"
+```
+
+### Paso 2: Crear documentos de ejemplo (5 min)
+
+Para este ejercicio, crearemos documentos en memoria que simulan una base de conocimiento corporativa:
+
+```python
+from langchain.schema import Document
+
+# Simulamos documentos de una empresa ficticia "TechCorp"
+documentos = [
+    Document(
+        page_content="""
+        Política de Vacaciones de TechCorp:
+        Todos los empleados a tiempo completo tienen derecho a 23 días laborables
+        de vacaciones al año. Los empleados con más de 5 años de antigüedad
+        reciben 2 días adicionales por cada año extra, hasta un máximo de 30 días.
+        Las vacaciones deben solicitarse con al menos 15 días de antelación a través
+        del portal de RRHH. El período de julio y agosto tiene restricciones:
+        solo se puede tomar un máximo de 15 días consecutivos. Las vacaciones
+        no disfrutadas no se acumulan al año siguiente, salvo autorización expresa
+        del director de departamento.
+        """,
+        metadata={"fuente": "manual_rrhh.pdf", "seccion": "vacaciones"}
+    ),
+    Document(
+        page_content="""
+        Política de Teletrabajo de TechCorp:
+        Los empleados pueden teletrabajar hasta 3 días por semana, siendo obligatoria
+        la presencia en oficina los martes y jueves. Para teletrabajar es necesario
+        tener una conexión a internet estable de al menos 50 Mbps y un espacio
+        de trabajo adecuado. El horario de teletrabajo es flexible entre las 7:00
+        y las 20:00, pero se debe mantener disponibilidad en el horario core de
+        10:00 a 14:00. El responsable directo debe aprobar el plan de teletrabajo
+        cada trimestre. Los gastos de internet y electricidad derivados del
+        teletrabajo se compensan con 50 euros mensuales.
+        """,
+        metadata={"fuente": "manual_rrhh.pdf", "seccion": "teletrabajo"}
+    ),
+    Document(
+        page_content="""
+        Proceso de Evaluación del Desempeño en TechCorp:
+        La evaluación se realiza semestralmente en junio y diciembre. Cada empleado
+        debe completar una autoevaluación y recibir feedback de al menos 3 compañeros
+        (evaluación 360). La puntuación va de 1 a 5, donde 1 es 'No cumple expectativas'
+        y 5 es 'Excepcional'. Los empleados con puntuación 4 o superior son elegibles
+        para bonus (hasta el 15% del salario anual) y promoción. Los empleados con
+        puntuación inferior a 2 durante dos semestres consecutivos entran en un plan
+        de mejora de 90 días. Los resultados de la evaluación son confidenciales
+        y solo los conocen el empleado, su responsable directo y RRHH.
+        """,
+        metadata={"fuente": "manual_rrhh.pdf", "seccion": "evaluacion"}
+    ),
+    Document(
+        page_content="""
+        Beneficios Sociales de TechCorp:
+        Seguro médico privado para el empleado y familiares directos (cónyuge e hijos).
+        Ticket restaurante de 11 euros diarios para días presenciales. Retribución
+        flexible: guardería, transporte y formación. Presupuesto de formación anual
+        de 1500 euros por empleado. Gimnasio corporativo gratuito en la sede central.
+        Descuentos en productos de la empresa (hasta 40%). Plan de pensiones con
+        aportación de la empresa del 3% del salario bruto. Seguro de vida de
+        2x el salario anual bruto.
+        """,
+        metadata={"fuente": "manual_rrhh.pdf", "seccion": "beneficios"}
+    ),
+]
+
+print(f"Documentos creados: {len(documentos)}")
+for doc in documentos:
+    print(f"  - {doc.metadata['seccion']}: {len(doc.page_content)} caracteres")
+```
+
+### Paso 3: Dividir, indexar y crear la base vectorial (10 min)
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# 1. Configurar el text splitter
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=100,
+    separators=["\n\n", "\n", ". ", " ", ""]
+)
+
+# 2. Dividir los documentos en chunks
+chunks = text_splitter.split_documents(documentos)
+print(f"\nDocumentos originales: {len(documentos)}")
+print(f"Chunks generados: {len(chunks)}")
+print(f"\nEjemplo de chunk:")
+print(f"  Contenido: {chunks[0].page_content[:150]}...")
+print(f"  Metadata: {chunks[0].metadata}")
+
+# 3. Crear embeddings y base vectorial Chroma
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    collection_name="techcorp_rrhh",
+    persist_directory="./chroma_db"  # Persiste en disco
+)
+
+print(f"\nBase vectorial creada con {vectorstore._collection.count()} vectores")
+```
+
+**Verifica** que la base se creó correctamente haciendo una búsqueda de prueba:
+
+```python
+# Búsqueda por similitud (sin LLM, solo recuperación)
+resultados = vectorstore.similarity_search("¿cuántos días de vacaciones tengo?", k=3)
+print("\n--- Resultados de búsqueda ---")
+for i, doc in enumerate(resultados):
+    print(f"\nResultado {i+1} (sección: {doc.metadata.get('seccion', 'N/A')}):")
+    print(f"  {doc.page_content[:200]}...")
+```
+
+### Paso 4: Construir la cadena RAG completa (10 min)
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+
+# 1. Configurar el LLM
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    temperature=0.0  # Respuestas deterministas para RAG
+)
+
+# 2. Definir el prompt template para RAG
+template = """Eres un asistente de recursos humanos de TechCorp. Responde la pregunta
+del empleado basándote EXCLUSIVAMENTE en el contexto proporcionado.
+
+Si la información no está en el contexto, di claramente: "No tengo información sobre
+ese tema en la documentación disponible. Te recomiendo contactar con RRHH directamente."
+
+No inventes ni extrapoles información que no esté explícitamente en el contexto.
+
+Contexto:
+{context}
+
+Pregunta del empleado: {question}
+
+Respuesta:"""
+
+prompt = PromptTemplate(
+    template=template,
+    input_variables=["context", "question"]
+)
+
+# 3. Crear la cadena RAG
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",  # Inserta todo el contexto en un solo prompt
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    chain_type_kwargs={"prompt": prompt},
+    return_source_documents=True
+)
+
+# 4. Probar con preguntas
+preguntas = [
+    "¿Cuántos días de vacaciones me corresponden si llevo 7 años en la empresa?",
+    "¿Puedo teletrabajar los viernes?",
+    "¿Cuánto es el bonus máximo por buen desempeño?",
+    "¿Cómo solicito un aumento de sueldo?",  # No está en los documentos
+]
+
+for pregunta in preguntas:
+    print(f"\n{'='*60}")
+    print(f"PREGUNTA: {pregunta}")
+    resultado = qa_chain.invoke({"query": pregunta})
+    print(f"RESPUESTA: {resultado['result']}")
+    print(f"FUENTES: {[doc.metadata.get('seccion') for doc in resultado['source_documents']]}")
+```
+
+### Paso 5: Documentar resultados (10 min)
+
+Completa la siguiente tabla con los resultados obtenidos:
+
+| Pregunta | Respuesta del sistema | Fuentes utilizadas | ¿Respuesta correcta? |
+|----------|----------------------|--------------------|-----------------------|
+| ¿Cuántos días de vacaciones con 7 años? | __________________ | __________________ | _______ |
+| ¿Puedo teletrabajar los viernes? | __________________ | __________________ | _______ |
+| ¿Cuánto es el bonus máximo? | __________________ | __________________ | _______ |
+| ¿Cómo solicito un aumento de sueldo? | __________________ | __________________ | _______ |
+
+**Referencia de código adicional:** Para ver un ejemplo más completo de un bot FAQ con LangChain, consulta el repositorio del curso: [faqBot.py](https://github.com/rpmaya/ml2_code/blob/main/LangChain/faqBot.py)
+
+### Preguntas de Reflexión
+
+1. La cuarta pregunta ("¿Cómo solicito un aumento de sueldo?") no tiene respuesta en los documentos. ¿El sistema respondió correctamente indicando que no tiene esa información, o inventó una respuesta? ¿Qué ajustes harías en el prompt para mejorar este comportamiento?
+2. Observa las fuentes utilizadas para cada respuesta. ¿El retriever recuperó siempre los chunks más relevantes? ¿Hubo algún caso donde incluyó chunks irrelevantes?
+3. ¿Qué ventajas e inconvenientes tiene usar Chroma (local) frente a Pinecone (cloud) para la base vectorial? ¿En qué escenarios elegirías cada uno?
+
+---
+
+## Ejercicio 4: Evaluación de Calidad de un Sistema RAG
+
+### Metadata
+- **Duración estimada**: 25 minutos
+- **Tipo**: Análisis
+- **Modalidad**: Individual
+- **Dificultad**: Avanzada
+- **Prerequisitos**: Ejercicio 3 completado (sistema RAG funcionando)
+
+### Contexto
+Construir un sistema RAG es solo la mitad del trabajo; la otra mitad es evaluar su calidad. Un sistema RAG puede fallar de múltiples formas: puede recuperar fragmentos irrelevantes (fallo de recuperación), puede ignorar la información recuperada e inventar respuestas (alucinación), o puede dar respuestas parciales omitiendo datos importantes (falta de completitud). La evaluación sistemática permite identificar estos problemas y guiar las mejoras del sistema.
+
+### Objetivo de Aprendizaje
+- Diseñar un conjunto de preguntas de evaluación (test set) para un sistema RAG
+- Aplicar las métricas de calidad: relevancia de contexto, fidelidad y completitud
+- Identificar patrones de fallo y clasificarlos por tipo
+- Proponer mejoras concretas basadas en los resultados de la evaluación
+
+### Enunciado
+
+### Paso 1: Diseñar el conjunto de evaluación (8 min)
+
+Crea un test set de al menos 8 preguntas que cubran los siguientes tipos:
+
+| Tipo de pregunta | Descripción | Ejemplo |
+|-----------------|-------------|---------|
+| **Factual directa** | La respuesta está explícitamente en un documento | "¿Cuántos días de vacaciones tiene un empleado?" |
+| **Factual con razonamiento** | Requiere combinar información de un fragmento | "Si llevo 7 años, ¿cuántos días extra de vacaciones tengo?" |
+| **Multi-documento** | Requiere información de varios documentos | "¿Qué beneficios económicos tiene un empleado sumando ticket, compensación de teletrabajo y plan de pensiones?" |
+| **Sin respuesta** | La información no existe en los documentos | "¿Cuál es la política de mascotas en la oficina?" |
+| **Ambigua** | La pregunta es imprecisa o tiene múltiples interpretaciones | "¿Qué puedo pedir?" |
+| **Paráfrasis** | Misma pregunta que una factual pero formulada de forma diferente | "¿Cuántas jornadas de descanso anual me corresponden?" |
+
+Completa la tabla con tus preguntas:
+
+| # | Tipo | Pregunta | Respuesta esperada |
+|---|------|----------|--------------------|
+| 1 | Factual directa | __________________ | __________________ |
+| 2 | Factual directa | __________________ | __________________ |
+| 3 | Factual con razonamiento | __________________ | __________________ |
+| 4 | Multi-documento | __________________ | __________________ |
+| 5 | Sin respuesta | __________________ | __________________ |
+| 6 | Sin respuesta | __________________ | __________________ |
+| 7 | Ambigua | __________________ | __________________ |
+| 8 | Paráfrasis | __________________ | __________________ |
+
+### Paso 2: Ejecutar las preguntas y recoger resultados (7 min)
+
+Ejecuta cada pregunta en tu sistema RAG del Ejercicio 3 y documenta los resultados:
+
+| # | Respuesta del sistema | Fragmentos recuperados (resumen) |
+|---|----------------------|----------------------------------|
+| 1 | __________________ | __________________ |
+| 2 | __________________ | __________________ |
+| 3 | __________________ | __________________ |
+| 4 | __________________ | __________________ |
+| 5 | __________________ | __________________ |
+| 6 | __________________ | __________________ |
+| 7 | __________________ | __________________ |
+| 8 | __________________ | __________________ |
+
+### Paso 3: Evaluar con métricas de calidad (5 min)
+
+Para cada pregunta, evalúa las tres métricas principales en una escala de 1 a 5:
+
+| # | Relevancia del contexto | Fidelidad | Completitud | Puntuación global |
+|---|------------------------|-----------|-------------|-------------------|
+| 1 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 2 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 3 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 4 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 5 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 6 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 7 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| 8 | ___ /5 | ___ /5 | ___ /5 | ___ /5 |
+| **Promedio** | **___ /5** | **___ /5** | **___ /5** | **___ /5** |
+
+**Guía de puntuación:**
+
+- **Relevancia del contexto** (¿Los fragmentos recuperados son pertinentes para la pregunta?):
+  - 5: Todos los fragmentos son directamente relevantes
+  - 3: Algunos fragmentos son relevantes, otros no
+  - 1: Ningún fragmento es relevante
+
+- **Fidelidad** (¿La respuesta se basa en los fragmentos recuperados, sin inventar?):
+  - 5: Toda la información de la respuesta proviene de los fragmentos
+  - 3: Mezcla información de fragmentos con información inventada
+  - 1: La respuesta es completamente inventada (alucinación)
+
+- **Completitud** (¿La respuesta incluye toda la información relevante disponible?):
+  - 5: Incluye toda la información disponible en los documentos
+  - 3: Incluye parte de la información, omite detalles importantes
+  - 1: Respuesta muy incompleta o vacía
+
+### Paso 4: Analizar patrones de fallo y proponer mejoras (5 min)
+
+Clasifica los problemas encontrados:
+
+| Tipo de fallo | Preguntas afectadas | Causa probable | Mejora propuesta |
+|---------------|--------------------|-----------------|--------------------|
+| Recuperación irrelevante | #___, #___ | Chunks muy grandes / embeddings inadecuados | __________________ |
+| Alucinación | #___, #___ | Prompt insuficiente / temperatura alta | __________________ |
+| Respuesta incompleta | #___, #___ | Top K bajo / chunks que cortan información | __________________ |
+| Fallo en pregunta sin respuesta | #___, #___ | No hay instrucción clara de "no sé" | __________________ |
+
+**Resumen de la evaluación:**
+- Puntuación global del sistema: ___ /5
+- Principal fortaleza: __________________
+- Principal debilidad: __________________
+- Mejora prioritaria: __________________
+
+### Preguntas de Reflexión
+
+1. ¿Qué tipo de pregunta fue más difícil para tu sistema RAG? ¿Por qué crees que es así?
+2. Si tuvieras que automatizar esta evaluación (sin revisión humana), ¿cómo lo harías? Investiga brevemente el concepto de "LLM-as-judge" donde un segundo modelo evalúa las respuestas del primero.
+3. ¿Qué relación existe entre el parámetro Top K (número de fragmentos recuperados) y las métricas de relevancia y completitud? ¿Hay un trade-off? ¿Cuál sería el valor óptimo para tu caso?
+
+---
+
+## Resumen de Tiempos
+
+| Ejercicio | Duración | Tipo | Habilidad clave |
+|-----------|----------|------|-----------------|
+| 1. Embeddings y Similitud Semántica | 30 min | Programación | Entender cómo los modelos representan texto como vectores |
+| 2. Laboratorio de Chunking | 25 min | Programación | Elegir la estrategia de fragmentación óptima |
+| 3. Pipeline RAG con LangChain y Chroma | 40 min | Hands-on | Construir un sistema RAG funcional de principio a fin |
+| 4. Evaluación de Calidad RAG | 25 min | Análisis | Medir y mejorar la calidad de un sistema RAG |
+| **Total** | **120 min** | | |
+
+> **Nota:** Los ejercicios siguen una progresión lógica: primero se entienden los componentes fundamentales (embeddings y chunking), luego se integran en un pipeline completo, y finalmente se evalúa su calidad. Se recomienda realizarlos en orden.
+
+</script>
+
+<script src="../assets/u5.js"></script>
+
+</body>
+</html>

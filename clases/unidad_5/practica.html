@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Práctica evaluable · Unidad 5 — ML2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<link rel="stylesheet" href="../assets/u5.css" />
+</head>
+<body>
+
+<div class="reading-progress" aria-hidden="true">
+  <div class="reading-progress__bar" id="readingBar"></div>
+</div>
+
+<nav class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <a href="unidad_5.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:12px;color:inherit">
+        <span class="badge">ML2 · U5</span>
+      </a>
+      <span>Práctica evaluable</span>
+    </div>
+    <div class="right">
+      <ul>
+        <li><a href="unidad_5.html"><i class="fa-solid fa-arrow-left"></i> Unidad 5</a></li>
+        <li><a href="unidad_5.html#sesion-1">Sesión 1</a></li>
+        <li><a href="unidad_5.html#sesion-2">Sesión 2</a></li>
+        <li><a href="unidad_5.html#sesion-3">Sesión 3</a></li>
+        <li><a href="ejercicios.html">Ejercicios</a></li>
+        <li><a href="practica.html">Práctica</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+        <i class="fa-solid fa-moon" id="themeIcon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <span class="pill"><i class="fa-solid fa-flask"></i> Unidad 5 · Práctica evaluable</span>
+  <h1>Práctica evaluable<br/>Asistente RAG para TechCorp</h1>
+  <p class="lead">Reto integrador de la Unidad 5: construye un asistente RAG completo capaz de responder consultas sobre la documentación interna de TechCorp. Dos opciones de implementación: n8n o LangChain.</p>
+  <div class="meta">
+    <div class="meta-item"><i class="fa-solid fa-trophy"></i> Entrega obligatoria</div><div class="meta-item"><i class="fa-solid fa-code-branch"></i> Opción A (n8n) · Opción B (LangChain)</div><div class="meta-item"><i class="fa-regular fa-clock"></i> 2 h estimadas</div>
+  </div>
+</header>
+
+<div class="main-layout">
+  <main class="main-content">
+    <section class="content reveal" id="contenido" data-toc-label="Práctica evaluable">
+      <div class="section-header">
+        <div class="num"><i class="fa-solid fa-trophy"></i></div>
+        <h2>Práctica evaluable</h2>
+        <span class="tag tag-prac">Entrega obligatoria</span>
+      </div>
+      <div class="markdown-body" id="md-render-main"></div>
+    </section>
+  </main>
+
+  <aside class="sidebar-toc" id="sidebarToc" aria-label="Índice de contenidos">
+    <h4><i class="fa-solid fa-list"></i> En esta página</h4>
+    <ul id="sidebarTocList"></ul>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h5>Curso</h5>
+      <ul>
+        <li><a href="https://github.com/rpmaya/ml2_online" target="_blank" rel="noopener">Repositorio ml2_online</a></li>
+        <li><a href="https://github.com/rpmaya/ml2_code" target="_blank" rel="noopener">Repositorio ml2_code</a></li>
+        <li><a href="https://github.com/rpmaya/ml2_clases" target="_blank" rel="noopener">Repositorio ml2_clases</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Esta unidad</h5>
+      <ul>
+        <li><a href="unidad_5.html">Material completo</a></li>
+        <li><a href="unidad_5.html#sesion-1">Sesión 1 · Fundamentos</a></li>
+        <li><a href="unidad_5.html#sesion-2">Sesión 2 · Pipeline</a></li>
+        <li><a href="unidad_5.html#sesion-3">Sesión 3 · GraphRAG</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Páginas standalone</h5>
+      <ul>
+        <li><a href="ejercicios.html"><i class="fa-regular fa-file-lines"></i> Ejercicios prácticos</a></li>
+        <li><a href="practica.html"><i class="fa-solid fa-flask"></i> Práctica evaluable</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    Curso <strong>Aprendizaje Automático II</strong> · Unidad 5 · Generado desde los archivos markdown del repositorio · Hecho con <span class="heart">♥</span>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" aria-label="Volver arriba">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script type="text/markdown" id="md-source" data-target="md-render-main">
+# Práctica Evaluable - Unidad 5
+## Asistente RAG para Documentación de Empresa
+
+---
+
+## Información General
+
+| Campo | Valor |
+|-------|-------|
+| **Unidad** | 5 - RAG y Bases Vectoriales |
+| **Tipo** | Práctica individual |
+| **Duración estimada** | 120 minutos |
+| **Entrega** | Archivo ZIP con workflow n8n (JSON) o código Python + documentación |
+| **Fecha límite** | Según calendario del curso |
+
+---
+
+## Objetivo
+
+Construir un **sistema RAG (Retrieval-Augmented Generation) funcional** capaz de responder preguntas sobre documentación interna de una empresa ficticia (políticas de RRHH, procedimientos técnicos, FAQs).
+
+El alumno deberá implementar el pipeline completo: ingesta de documentos, almacenamiento en base vectorial, recuperación semántica y generación de respuestas contextualizadas.
+
+### Objetivos de Aprendizaje
+
+1. Comprender e implementar la arquitectura RAG completa (ingesta, indexación, recuperación, generación)
+2. Configurar y utilizar una base de datos vectorial para almacenar embeddings de documentos
+3. Aplicar técnicas de chunking adecuadas para la segmentación de documentos
+4. Evaluar la calidad de las respuestas generadas, incluyendo el manejo de preguntas sin respuesta
+
+### Opciones de Implementación
+
+Puedes elegir **una** de las dos opciones:
+
+| | **Opción A - n8n (No-Code)** | **Opción B - LangChain (Python)** |
+|---|---|---|
+| **Perfil** | Sin experiencia en programación | Con conocimientos de Python |
+| **Base vectorial** | Pinecone (cloud) | ChromaDB (local) |
+| **Modelo** | OpenAI vía credenciales n8n | OpenAI vía API |
+| **Canal** | Telegram Bot | CLI (línea de comandos) |
+
+---
+
+## Documentos de Prueba
+
+Antes de comenzar la implementación, crea una carpeta `documentos/` con los siguientes archivos de ejemplo. Estos simulan documentación interna de una empresa ficticia llamada **TechCorp**.
+
+### Archivo: `documentos/politicas_rrhh.txt`
+
+```text
+POLÍTICAS DE RECURSOS HUMANOS - TECHCORP
+
+1. HORARIO LABORAL
+El horario estándar es de 9:00 a 18:00, de lunes a viernes, con una hora para
+la comida. Se permite flexibilidad horaria de entrada entre las 8:00 y las 10:00,
+ajustando la hora de salida proporcionalmente. El trabajo en remoto está permitido
+hasta 2 días por semana, previa aprobación del responsable directo.
+
+2. VACACIONES Y PERMISOS
+Cada empleado dispone de 23 días laborables de vacaciones al año. Las vacaciones
+deben solicitarse con al menos 15 días de antelación a través del portal del
+empleado. No se pueden acumular más de 5 días de vacaciones de un año para otro.
+Los permisos por asuntos propios (máximo 3 días al año) deben comunicarse con
+48 horas de antelación.
+
+3. TELETRABAJO
+La política de teletrabajo permite hasta 2 días semanales de trabajo remoto.
+Es obligatorio estar disponible en horario laboral y utilizar la VPN corporativa.
+Las reuniones de equipo presenciales son obligatorias los martes y jueves.
+Para solicitar teletrabajo adicional, se requiere aprobación del director de área.
+
+4. FORMACIÓN
+La empresa ofrece un presupuesto anual de 1.500 euros por empleado para formación
+profesional. Los cursos deben estar relacionados con el puesto de trabajo o con
+competencias estratégicas de la empresa. La solicitud se realiza a través del
+departamento de RRHH con al menos 30 días de antelación. Se requiere presentar
+un informe resumen tras completar la formación.
+
+5. EVALUACIÓN DEL DESEMPEÑO
+Las evaluaciones se realizan semestralmente (junio y diciembre). El proceso
+incluye autoevaluación, evaluación del responsable directo y reunión de feedback.
+Los objetivos se fijan al inicio de cada semestre. La evaluación impacta en las
+decisiones de promoción y revisión salarial anual.
+
+6. CÓDIGO DE VESTIMENTA
+La empresa mantiene un código de vestimenta business casual. En reuniones con
+clientes externos se requiere vestimenta formal. Los viernes se permite vestimenta
+casual. No se permite el uso de chanclas, camisetas de tirantes o ropa deportiva
+en las instalaciones de la empresa.
+```
+
+### Archivo: `documentos/procedimiento_soporte.txt`
+
+```text
+PROCEDIMIENTO DE SOPORTE TÉCNICO - TECHCORP
+
+1. CLASIFICACIÓN DE INCIDENCIAS
+Las incidencias se clasifican en tres niveles de prioridad:
+- CRÍTICA (P1): Sistemas caídos que afectan a toda la empresa. Tiempo de
+  respuesta máximo: 30 minutos. Resolución objetivo: 4 horas.
+- ALTA (P2): Funcionalidad degradada que afecta a un departamento. Tiempo de
+  respuesta máximo: 2 horas. Resolución objetivo: 8 horas.
+- NORMAL (P3): Incidencias menores o consultas. Tiempo de respuesta máximo:
+  24 horas. Resolución objetivo: 3 días laborables.
+
+2. PROCESO DE REPORTE
+Para reportar una incidencia:
+a) Acceder al portal de soporte: soporte.techcorp.internal
+b) Seleccionar la categoría correspondiente (Hardware, Software, Red, Accesos)
+c) Describir el problema con el máximo detalle posible
+d) Adjuntar capturas de pantalla si es relevante
+e) Indicar la urgencia y el impacto en el trabajo
+El sistema asignará automáticamente un número de ticket y un técnico responsable.
+
+3. ESCALADO DE INCIDENCIAS
+Si una incidencia no se resuelve en el tiempo establecido:
+- P3 sin resolver en 3 días → Se escala a P2 automáticamente
+- P2 sin resolver en 8 horas → Se notifica al responsable de IT
+- P1 sin resolver en 4 horas → Se activa el protocolo de crisis con dirección
+
+4. MANTENIMIENTO PROGRAMADO
+Los mantenimientos se realizan los domingos de 2:00 a 6:00. Se notifica a todos
+los empleados con al menos 48 horas de antelación por email y en el portal.
+Durante el mantenimiento, los sistemas pueden no estar disponibles. En caso de
+emergencia, contactar con el teléfono de guardia: ext. 9999.
+
+5. POLÍTICA DE CONTRASEÑAS
+Las contraseñas deben cumplir los siguientes requisitos:
+- Mínimo 12 caracteres
+- Al menos una mayúscula, una minúscula, un número y un carácter especial
+- Cambio obligatorio cada 90 días
+- No se pueden reutilizar las últimas 5 contraseñas
+- Tras 5 intentos fallidos, la cuenta se bloquea automáticamente
+Para desbloquear la cuenta, contactar con soporte técnico presentando
+identificación válida.
+
+6. SOFTWARE AUTORIZADO
+Solo se puede instalar software aprobado por el departamento de IT. La lista
+de software autorizado está disponible en la intranet. Para solicitar la
+instalación de software adicional, abrir un ticket de categoría "Software"
+indicando el nombre del programa, la justificación y la URL de descarga oficial.
+```
+
+---
+
+## Paso 1: Preparación del Entorno (15 min)
+
+### Opción A - n8n
+
+1. Accede a tu instancia de n8n
+2. Configura las siguientes **credenciales**:
+   - **OpenAI:** API Key desde [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+   - **Pinecone:** API Key desde [app.pinecone.io](https://app.pinecone.io)
+3. Crea un **índice en Pinecone**:
+   - Nombre: `empresa-docs`
+   - Dimensiones: `1536` (para embeddings de OpenAI `text-embedding-ada-002`)
+   - Métrica: `cosine`
+   - Región: la más cercana disponible
+
+> **Nota:** Si prefieres no crear cuenta en Pinecone, puedes usar el nodo **Supabase** o **Qdrant** como alternativa de base vectorial en n8n.
+
+### Opción B - LangChain (Python)
+
+1. Crea un entorno virtual e instala las dependencias:
+
+```bash
+# Crear entorno virtual
+python -m venv rag_env
+source rag_env/bin/activate  # En Windows: rag_env\Scripts\activate
+
+# Instalar dependencias
+pip install langchain langchain-openai langchain-community chromadb pypdf python-dotenv
+```
+
+2. Crea un archivo `.env` con tu API Key:
+
+```env
+OPENAI_API_KEY=sk-tu-api-key-aqui
+```
+
+3. Crea la estructura de carpetas del proyecto:
+
+```
+mi_rag_proyecto/
+├── documentos/
+│   ├── politicas_rrhh.txt
+│   └── procedimiento_soporte.txt
+├── .env
+├── ingesta.py
+├── asistente.py
+└── requirements.txt
+```
+
+4. Crea el archivo `requirements.txt`:
+
+```text
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.10
+chromadb>=0.4.0
+pypdf>=3.0.0
+python-dotenv>=1.0.0
+```
+
+---
+
+## Paso 2: Ingesta de Documentos (25 min)
+
+### Opción A - n8n
+
+Construye un workflow de **ingesta** siguiendo la arquitectura vista en la sección 5.6.2 de la teoría:
+
+1. **Trigger manual:** Nodo "When clicking 'Test Workflow'" para ejecutar la ingesta bajo demanda
+2. **Leer archivos:** Nodo para cargar los documentos de texto (puedes usar "Read/Write Files from Disk" o pegar el contenido directamente en un nodo "Set")
+3. **Segmentar texto:** Nodo **"Recursive Character Text Splitter"** con los parámetros:
+   - `Chunk Size: 300` caracteres
+   - `Chunk Overlap: 30` caracteres
+4. **Generar embeddings:** Nodo **"Embeddings OpenAI"** (modelo `text-embedding-ada-002`)
+5. **Almacenar en Pinecone:** Nodo **"Pinecone Vector Store"** en modo **Insert** apuntando al índice `empresa-docs`
+
+**Flujo del workflow de ingesta:**
+
+```
+[Manual Trigger] → [Set/Read Files] → [Text Splitter] → [Embeddings OpenAI] → [Pinecone Insert]
+```
+
+> **Importante:** Ejecuta este workflow una vez para indexar los documentos. Verifica en el panel de Pinecone que los vectores se han almacenado correctamente.
+
+### Opción B - LangChain (Python)
+
+Crea el archivo `ingesta.py`:
+
+```python
+"""
+Ingesta de documentos para el sistema RAG.
+Carga documentos, los divide en chunks y los almacena en ChromaDB.
+"""
+
+import os
+from dotenv import load_dotenv
+from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Verificar API Key
+if not os.getenv("OPENAI_API_KEY"):
+    raise ValueError("No se encontró OPENAI_API_KEY en el archivo .env")
+
+def cargar_documentos(ruta_documentos: str):
+    """Carga todos los documentos .txt de la carpeta indicada."""
+    loader = DirectoryLoader(
+        ruta_documentos,
+        glob="**/*.txt",
+        loader_cls=TextLoader,
+        loader_kwargs={"encoding": "utf-8"}
+    )
+    documentos = loader.load()
+    print(f"Documentos cargados: {len(documentos)}")
+    for doc in documentos:
+        print(f"  - {doc.metadata['source']} ({len(doc.page_content)} caracteres)")
+    return documentos
+
+def dividir_documentos(documentos):
+    """Divide los documentos en chunks con solapamiento."""
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=300,
+        chunk_overlap=30,
+        length_function=len,
+        separators=["\n\n", "\n", ". ", " ", ""]
+    )
+    chunks = text_splitter.split_documents(documentos)
+    print(f"Chunks generados: {len(chunks)}")
+    print(f"Tamaño medio de chunk: {sum(len(c.page_content) for c in chunks) // len(chunks)} caracteres")
+    return chunks
+
+def crear_base_vectorial(chunks, ruta_db: str = "./chroma_db"):
+    """Genera embeddings y almacena en ChromaDB."""
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+    vectorstore = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory=ruta_db,
+        collection_name="empresa_docs"
+    )
+
+    print(f"Base vectorial creada en: {ruta_db}")
+    print(f"Vectores almacenados: {vectorstore._collection.count()}")
+    return vectorstore
+
+if __name__ == "__main__":
+    print("=" * 50)
+    print("INGESTA DE DOCUMENTOS - Sistema RAG")
+    print("=" * 50)
+
+    # 1. Cargar documentos
+    documentos = cargar_documentos("./documentos")
+
+    # 2. Dividir en chunks
+    chunks = dividir_documentos(documentos)
+
+    # Mostrar ejemplo de chunk
+    print(f"\nEjemplo de chunk:")
+    print(f"  Contenido: {chunks[0].page_content[:150]}...")
+    print(f"  Metadata: {chunks[0].metadata}")
+
+    # 3. Crear base vectorial
+    vectorstore = crear_base_vectorial(chunks)
+
+    print("\nIngesta completada con éxito.")
+```
+
+> **Conexión con la teoría:** El `RecursiveCharacterTextSplitter` divide el texto intentando respetar los separadores naturales (párrafos, líneas, frases) en ese orden de prioridad. El `chunk_overlap=30` asegura que no se pierda contexto en los límites entre chunks, tal como se explicó en la sesión teórica sobre estrategias de chunking.
+
+---
+
+## Paso 3: Construcción del Agente RAG (25 min)
+
+### Opción A - n8n
+
+Construye un segundo workflow para el **agente conversacional** siguiendo la sección 5.6.3 de la teoría:
+
+1. **Chat Trigger:** Nodo "When chat message received"
+2. **AI Agent:** Nodo central con las siguientes conexiones:
+   - **Chat Model:** OpenAI `gpt-4o-mini`
+   - **Memory:** Window Buffer Memory (Context Window Length: 10)
+   - **Tool - Vector Store:** Conectar Pinecone como herramienta de recuperación
+3. **Configurar la herramienta de recuperación:**
+   - Nodo **"Vector Store Tool"** conectado al AI Agent
+   - Dentro del Vector Store Tool, conectar:
+     - **"Pinecone Vector Store"** en modo **Load** (índice `empresa-docs`)
+     - **"Embeddings OpenAI"** para convertir la consulta en vector
+   - Nombre de la herramienta: `buscar_documentacion`
+   - Descripción: `Busca información en la documentación interna de la empresa TechCorp. Usa esta herramienta para responder preguntas sobre políticas de RRHH, procedimientos técnicos, soporte, vacaciones, teletrabajo y cualquier otra consulta sobre la empresa.`
+
+4. **System Prompt del AI Agent:**
+
+```
+# Rol
+Eres el asistente virtual de TechCorp, especializado en responder preguntas
+sobre la documentación interna de la empresa.
+
+# Tareas
+- Responder a: {{ $json.chatInput }}
+- Buscar SIEMPRE en la documentación interna antes de responder
+- Proporcionar respuestas precisas basadas en los documentos de la empresa
+- Citar la fuente del documento cuando sea posible
+
+# Restricciones
+- SOLO responder con información que esté en la documentación de la empresa
+- Si la información no está en los documentos, responder: "No dispongo de
+  información sobre ese tema en la documentación de la empresa. Te recomiendo
+  contactar con el departamento correspondiente."
+- NO inventar políticas, procedimientos ni datos que no estén en los documentos
+- NO responder preguntas que no estén relacionadas con la empresa
+
+# Formato
+- Respuestas claras y concisas
+- Usar viñetas cuando sea apropiado
+- Indicar el documento fuente cuando sea posible
+```
+
+**Flujo del workflow del agente:**
+
+```
+[Chat Trigger] → [AI Agent] ← [Chat Model (GPT-4o-mini)]
+                      ↑      ← [Window Buffer Memory]
+                      ↑      ← [Vector Store Tool] ← [Pinecone Load] ← [Embeddings OpenAI]
+```
+
+### Opción B - LangChain (Python)
+
+Crea el archivo `asistente.py`:
+
+```python
+"""
+Asistente RAG para documentación de empresa.
+Recupera información relevante y genera respuestas contextualizadas.
+"""
+
+import os
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+
+# Cargar variables de entorno
+load_dotenv()
+
+def cargar_base_vectorial(ruta_db: str = "./chroma_db"):
+    """Carga la base vectorial existente."""
+    embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+    vectorstore = Chroma(
+        persist_directory=ruta_db,
+        embedding_function=embeddings,
+        collection_name="empresa_docs"
+    )
+    print(f"Base vectorial cargada: {vectorstore._collection.count()} vectores")
+    return vectorstore
+
+def crear_cadena_rag(vectorstore):
+    """Crea la cadena RAG con LCEL (LangChain Expression Language)."""
+
+    # Configurar retriever
+    retriever = vectorstore.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 3}
+    )
+
+    # Configurar modelo
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0.3
+    )
+
+    # Prompt template
+    template = ChatPromptTemplate.from_messages([
+        ("system", """Eres el asistente virtual de TechCorp, especializado en responder
+preguntas sobre la documentación interna de la empresa.
+
+INSTRUCCIONES:
+- Responde SOLO con información que esté en el contexto proporcionado.
+- Si la información no está en el contexto, responde: "No dispongo de información
+  sobre ese tema en la documentación de la empresa. Te recomiendo contactar con
+  el departamento correspondiente."
+- NO inventes políticas, procedimientos ni datos.
+- Sé claro, conciso y profesional.
+- Cuando sea posible, indica de qué documento proviene la información.
+
+CONTEXTO DE DOCUMENTOS INTERNOS:
+{context}"""),
+        ("human", "{question}")
+    ])
+
+    # Función para formatear documentos recuperados
+    def formatear_docs(docs):
+        return "\n\n---\n\n".join(
+            f"[Fuente: {doc.metadata.get('source', 'desconocida')}]\n{doc.page_content}"
+            for doc in docs
+        )
+
+    # Construir cadena con LCEL
+    cadena = (
+        {
+            "context": retriever | formatear_docs,
+            "question": RunnablePassthrough()
+        }
+        | template
+        | llm
+        | StrOutputParser()
+    )
+
+    return cadena, retriever
+
+def main():
+    """Ejecuta el asistente en modo interactivo por CLI."""
+    print("=" * 50)
+    print("ASISTENTE RAG - TechCorp")
+    print("=" * 50)
+    print("Escribe tu pregunta sobre la documentación de la empresa.")
+    print("Escribe 'salir' para terminar.\n")
+
+    # Cargar base vectorial
+    vectorstore = cargar_base_vectorial()
+
+    # Crear cadena RAG
+    cadena, retriever = crear_cadena_rag(vectorstore)
+
+    while True:
+        pregunta = input("\nTú: ").strip()
+
+        if pregunta.lower() in ["salir", "exit", "quit", "q"]:
+            print("\n¡Hasta luego!")
+            break
+
+        if not pregunta:
+            print("Por favor, escribe una pregunta.")
+            continue
+
+        try:
+            # Mostrar documentos recuperados (para depuración)
+            docs_recuperados = retriever.invoke(pregunta)
+            print(f"\n[Documentos recuperados: {len(docs_recuperados)}]")
+            for i, doc in enumerate(docs_recuperados, 1):
+                fuente = doc.metadata.get("source", "desconocida")
+                print(f"  {i}. {fuente} - {doc.page_content[:80]}...")
+
+            # Generar respuesta
+            respuesta = cadena.invoke(pregunta)
+            print(f"\nAsistente: {respuesta}")
+
+        except Exception as e:
+            print(f"\nError al procesar la pregunta: {e}")
+
+if __name__ == "__main__":
+    main()
+```
+
+> **Conexión con la teoría:** La cadena LCEL implementa el patrón RAG completo: la pregunta del usuario se envía al retriever, que busca los 3 chunks más similares semánticamente (`k=3`). Estos chunks se inyectan en el prompt como contexto, y el LLM genera una respuesta basada exclusivamente en esa información recuperada. La `temperature=0.3` favorece respuestas más deterministas y fieles al contexto.
+
+---
+
+## Paso 4: Integración con Canal de Comunicación (15 min)
+
+### Opción A - n8n (Telegram)
+
+1. **Crear un bot de Telegram:**
+   - Abre Telegram y busca `@BotFather`
+   - Envía `/newbot` y sigue las instrucciones
+   - Guarda el **token** del bot
+
+2. **Configurar el trigger de Telegram en n8n:**
+   - Sustituye el nodo "When chat message received" por un nodo **"Telegram Trigger"**
+   - Configura las credenciales de Telegram con el token del bot
+   - Evento: `message`
+
+3. **Añadir respuesta por Telegram:**
+   - Después del AI Agent, añade un nodo **"Telegram - Send Message"**
+   - Chat ID: `{{ $('Telegram Trigger').item.json.message.chat.id }}`
+   - Texto: `{{ $json.output }}`
+
+**Flujo actualizado:**
+
+```
+[Telegram Trigger] → [AI Agent] → [Telegram Send Message]
+                          ↑ (Chat Model + Memory + Vector Store Tool)
+```
+
+### Opción B - LangChain (CLI)
+
+El archivo `asistente.py` ya incluye una interfaz CLI interactiva con el bucle `while True`. El usuario escribe preguntas por terminal y recibe respuestas del sistema RAG.
+
+Para ejecutar:
+
+```bash
+# Primero: ejecutar la ingesta (solo la primera vez)
+python ingesta.py
+
+# Después: ejecutar el asistente
+python asistente.py
+```
+
+> **Bonificación:** Si deseas obtener el punto extra, puedes integrar el asistente con una interfaz web usando **Streamlit** o **Gradio**. Ejemplo mínimo con Gradio:
+
+```python
+# interfaz_web.py (bonificación)
+import gradio as gr
+from asistente import cargar_base_vectorial, crear_cadena_rag
+
+vectorstore = cargar_base_vectorial()
+cadena, _ = crear_cadena_rag(vectorstore)
+
+def responder(pregunta, historial):
+    respuesta = cadena.invoke(pregunta)
+    historial.append((pregunta, respuesta))
+    return "", historial
+
+with gr.Blocks(title="Asistente TechCorp") as demo:
+    gr.Markdown("# Asistente RAG - TechCorp")
+    chatbot = gr.Chatbot()
+    msg = gr.Textbox(placeholder="Escribe tu pregunta...")
+    msg.submit(responder, [msg, chatbot], [msg, chatbot])
+
+demo.launch()
+```
+
+---
+
+## Paso 5: Pruebas y Optimización (25 min)
+
+Realiza las siguientes **5 consultas de prueba** y documenta las respuestas obtenidas. Incluye capturas de pantalla de cada interacción.
+
+### Consultas Obligatorias
+
+| # | Pregunta | Qué evalúa |
+|---|----------|-------------|
+| 1 | *"¿Cuántos días de vacaciones tengo al año?"* | Recuperación de dato específico |
+| 2 | *"¿Cuál es el procedimiento para reportar una incidencia técnica?"* | Respuesta con pasos secuenciales |
+| 3 | *"¿Puedo trabajar desde casa todos los días de la semana?"* | Interpretación y matiz (máximo 2 días) |
+| 4 | *"¿Cuál es el menú del comedor de la empresa?"* | **Caso negativo**: no hay información |
+| 5 | *"¿Cada cuánto tiempo debo cambiar mi contraseña?"* | Dato específico de otro documento |
+
+### Documentación de Pruebas
+
+Para cada consulta, documenta:
+
+1. **Pregunta realizada** (texto exacto)
+2. **Respuesta del sistema** (captura de pantalla o texto)
+3. **Documentos recuperados** (qué chunks usó el retriever)
+4. **Evaluación**: ¿La respuesta es correcta? ¿Es completa? ¿Cita la fuente?
+
+### Optimización (si es necesario)
+
+Si las respuestas no son satisfactorias, prueba a ajustar:
+
+- **Chunk size:** Probar con 200, 300 o 500 caracteres
+- **Chunk overlap:** Probar con 20, 30 o 50 caracteres
+- **Número de documentos recuperados (k):** Probar con 2, 3 o 5
+- **Temperatura del modelo:** Probar con 0.1, 0.3 o 0.5
+- **Prompt del sistema:** Refinar las instrucciones para mejorar la precisión
+
+> **Documenta los cambios:** Si realizas ajustes, explica qué parámetro cambiaste, por qué y qué efecto tuvo en la calidad de las respuestas.
+
+---
+
+## Paso 6: Documentación del Proyecto (15 min)
+
+Elabora un breve documento (1-2 páginas) que incluya:
+
+### 1. Arquitectura del Sistema
+
+Describe el flujo completo de tu sistema RAG:
+
+```
+Documentos → Chunking → Embeddings → Base Vectorial
+                                          ↓
+Pregunta del usuario → Embedding → Búsqueda semántica → Contexto recuperado
+                                                              ↓
+                                                    Prompt + Contexto → LLM → Respuesta
+```
+
+### 2. Decisiones Técnicas
+
+- ¿Qué opción elegiste (n8n o LangChain) y por qué?
+- ¿Qué tamaño de chunk utilizaste y por qué?
+- ¿Cuántos documentos recuperas por consulta (k)?
+- ¿Qué modelo de lenguaje y temperatura configuraste?
+
+### 3. Ejemplos de Funcionamiento
+
+- Las 5 consultas de prueba con sus respuestas
+- Capturas de pantalla del sistema en funcionamiento
+
+### 4. Mejoras Propuestas
+
+Describe al menos 3 mejoras que implementarías en una versión futura:
+- Ejemplo: añadir más documentos, implementar re-ranking, añadir historial de conversación persistente, integrar con Slack, usar modelos de embeddings multilingües, etc.
+
+---
+
+## Recomendaciones
+
+- **Ejecuta la ingesta antes de probar el agente.** Los documentos deben estar indexados en la base vectorial antes de realizar consultas.
+- **Verifica la ingesta:** Comprueba que el número de chunks almacenados es coherente con el tamaño de los documentos.
+- **Prueba el caso negativo:** Es fundamental que el sistema no invente información cuando no tiene respuesta.
+- **Documenta cada paso** con capturas de pantalla.
+- **Si usas n8n**, exporta ambos workflows (ingesta y agente) como archivos JSON separados.
+- **Si usas Python**, asegúrate de que el código se ejecuta sin errores en un entorno limpio.
+
+---
+
+## Rúbrica de Evaluación
+
+| Criterio | Descripción | Puntos |
+|----------|-------------|--------|
+| **Sistema funcional** | El sistema RAG responde correctamente a las consultas basándose en los documentos indexados | **3** |
+| **Ingesta correcta** | Documentos indexados con chunking apropiado, embeddings generados y almacenados en base vectorial | **2** |
+| **Documentación** | Documento de arquitectura claro, decisiones técnicas justificadas y ejemplos de funcionamiento | **2** |
+| **Pruebas** | Mínimo 5 consultas documentadas con capturas de pantalla y evaluación de las respuestas | **1.5** |
+| **Caso negativo** | El sistema no inventa información cuando la pregunta no tiene respuesta en los documentos | **1.5** |
+| **TOTAL** | | **10** |
+
+### Bonificación (hasta +1 punto adicional)
+
+| Bonificación | Descripción | Puntos extra |
+|--------------|-------------|--------------|
+| Canal externo | Despliegue en **Telegram** (n8n) o interfaz web con **Streamlit/Gradio** (Python) | **+1** |
+
+---
+
+## Formato y Proceso de Entrega
+
+### Nombre del Archivo
+
+```
+Apellido_Nombre_U5_Practica.zip
+```
+
+### Contenido del ZIP
+
+1. **Sistema RAG:**
+   - **Opción A (n8n):** Archivos JSON exportados de los workflows (ingesta + agente)
+   - **Opción B (Python):** Código fuente completo (`ingesta.py`, `asistente.py`, `requirements.txt`, `.env.example`)
+2. **Documentos de prueba:** Carpeta `documentos/` con los archivos `.txt` utilizados
+3. **Capturas de pantalla:** Evidencias del sistema funcionando (mínimo 5 consultas + caso negativo)
+4. **Documento de arquitectura:** PDF o Word con la documentación del proyecto (arquitectura, decisiones técnicas, ejemplos, mejoras propuestas)
+
+> **Importante:** No incluyas la API Key real en la entrega. Si usas Python, incluye un archivo `.env.example` con el formato pero sin la clave.
+
+### Proceso de Entrega
+
+1. Verifica que el sistema funciona correctamente ejecutando las 5 consultas de prueba
+2. Exporta los workflows (n8n) o verifica que el código se ejecuta en un entorno limpio (Python)
+3. Prepara el documento de arquitectura con capturas y reflexiones
+4. Comprime todo en un archivo ZIP con el nombre indicado
+5. Sube el archivo en Blackboard antes de la fecha límite
+6. Verifica que la entrega se ha realizado correctamente
+
+---
+
+## Recursos Útiles
+
+### Herramientas
+
+- [OpenAI - API Keys](https://platform.openai.com/api-keys)
+- [Pinecone - Consola](https://app.pinecone.io/)
+- [ChromaDB - Documentación](https://docs.trychroma.com/)
+- [LangChain - Documentación](https://python.langchain.com/docs/get_started/introduction)
+
+### Referencias
+
+- [Sesión 1 - Teoría](./sesion_1/teoria.md)
+- [Sesión 2 - Teoría](./sesion_2/teoria.md)
+- [LangChain - RAG Tutorial](https://python.langchain.com/docs/tutorials/rag/)
+- [n8n - AI Agent node](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.agent/)
+- [n8n - Vector Store nodes](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.vectorstoreagent/)
+
+---
+
+## Notas Finales
+
+- Esta práctica es **individual**
+- Puedes consultar la documentación oficial de las herramientas y los materiales del curso
+- Se valora la originalidad en la documentación y en las mejoras propuestas
+- Asegúrate de que el sistema funciona correctamente antes de entregar
+- Si usas credenciales, **no las incluyas en la entrega** (usa `.env.example` o indica dónde configurarlas)
+- En caso de dudas, consulta al profesor
+
+**Fecha de entrega:** Consultar calendario del curso
+
+</script>
+
+<script src="../assets/u5.js"></script>
+
+</body>
+</html>
