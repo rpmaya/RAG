@@ -469,6 +469,204 @@ documentos = loader.load()
 
 **Bonificación asociada:** ver sección de bonificaciones — la ingesta funcional desde Google Drive cuenta como mejora valorada.
 
+### Extra opcional: GraphRAG con Neo4j
+
+Como **bonificación de máximo valor (+1 punto)**, puedes implementar un **segundo pipeline RAG basado en grafos** usando Neo4j y la librería oficial `neo4j-graphrag`, siguiendo lo visto en la **sesión 3 (GraphRAG, 2025–2026)**.
+
+La idea no es sustituir el Vector RAG base, sino **complementarlo**: construyes el mismo conjunto de documentos como un grafo de entidades y relaciones, y comparas la calidad de las respuestas en preguntas multi-hop (p. ej. *"¿qué políticas se aplican al teletrabajo de un empleado que también solicita formación?"*).
+
+#### 1. Preparación de Neo4j
+
+Elige una de las dos opciones de despliegue:
+
+- **Opción cloud (recomendada):** [Neo4j AuraDB Free](https://neo4j.com/cloud/platform/aura-graph-database/) — instancia gratuita, sin tarjeta, hasta 200 k nodos y 400 k relaciones.
+- **Opción local:** Docker.
+
+```bash
+# Opción local con Docker
+docker run -d \
+  --name neo4j-rag \
+  -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/password-segura \
+  -e NEO4J_PLUGINS='["apoc"]' \
+  neo4j:5.20
+```
+
+Añade las credenciales a tu `.env`:
+
+```bash
+NEO4J_URI=neo4j+s://<tu-instancia>.databases.neo4j.io   # AuraDB
+# NEO4J_URI=bolt://localhost:7687                        # Docker local
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=password-segura
+OPENAI_API_KEY=sk-...
+```
+
+#### 2. Ingesta: construir el grafo de conocimiento
+
+Instala las dependencias:
+
+```bash
+pip install neo4j neo4j-graphrag[openai] python-dotenv
+```
+
+Crea `ingesta_graphrag.py`. El `SimpleKGPipeline` se encarga de **chunking + extracción de entidades y relaciones con un LLM + escritura en Neo4j**:
+
+```python
+"""
+Ingesta GraphRAG: construye un grafo de conocimiento en Neo4j
+a partir de los mismos documentos del Vector RAG base.
+"""
+
+import os
+import asyncio
+from pathlib import Path
+from dotenv import load_dotenv
+
+import neo4j
+from neo4j_graphrag.embeddings import OpenAIEmbeddings
+from neo4j_graphrag.llm import OpenAILLM
+from neo4j_graphrag.experimental.pipeline.kg_builder import SimpleKGPipeline
+
+load_dotenv()
+
+# Esquema sugerido para los documentos de TechCorp (opcional pero recomendado).
+# Si lo omites, el LLM inferirá entidades libremente (menos control, más ruido).
+ENTITIES = [
+    {"label": "Politica", "description": "Política interna de la empresa"},
+    {"label": "Procedimiento", "description": "Procedimiento operativo"},
+    {"label": "Departamento", "description": "Departamento o área (RRHH, IT, Soporte…)"},
+    {"label": "Recurso", "description": "Recurso, herramienta o sistema mencionado"},
+    {"label": "Plazo", "description": "Plazo, antelación o duración temporal"},
+]
+RELATIONS = [
+    {"label": "APLICA_A", "description": "Una política aplica a un departamento o recurso"},
+    {"label": "REQUIERE", "description": "Un procedimiento requiere un recurso o plazo"},
+    {"label": "GESTIONADO_POR", "description": "Un proceso gestionado por un departamento"},
+]
+POTENTIAL_SCHEMA = [
+    ("Politica", "APLICA_A", "Departamento"),
+    ("Politica", "APLICA_A", "Recurso"),
+    ("Procedimiento", "REQUIERE", "Recurso"),
+    ("Procedimiento", "REQUIERE", "Plazo"),
+    ("Procedimiento", "GESTIONADO_POR", "Departamento"),
+]
+
+
+async def main() -> None:
+    driver = neo4j.GraphDatabase.driver(
+        os.environ["NEO4J_URI"],
+        auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
+    )
+
+    llm = OpenAILLM(model_name="gpt-4o-mini", model_params={"temperature": 0})
+    embedder = OpenAIEmbeddings(model="text-embedding-3-small")
+
+    kg_builder = SimpleKGPipeline(
+        driver=driver,
+        llm=llm,
+        embedder=embedder,
+        entities=ENTITIES,
+        relations=RELATIONS,
+        potential_schema=POTENTIAL_SCHEMA,
+        from_pdf=False,                # estamos pasando texto plano
+        perform_entity_resolution=True # fusiona entidades equivalentes
+    )
+
+    docs_dir = Path("./documentos")
+    for txt_path in docs_dir.glob("*.txt"):
+        print(f"Procesando {txt_path.name}…")
+        await kg_builder.run_async(text=txt_path.read_text(encoding="utf-8"))
+
+    # Crear índice vectorial sobre los chunks (para el VectorRetriever)
+    with driver.session() as session:
+        session.run("""
+            CREATE VECTOR INDEX chunk_embeddings IF NOT EXISTS
+            FOR (c:Chunk) ON (c.embedding)
+            OPTIONS { indexConfig: {
+                `vector.dimensions`: 1536,
+                `vector.similarity_function`: 'cosine'
+            }}
+        """)
+
+    driver.close()
+    print("Grafo construido. Abre Neo4j Browser y ejecuta MATCH (n) RETURN n LIMIT 50;")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+> **Coste y tiempo:** la extracción de entidades llama al LLM una vez por chunk. Con `gpt-4o-mini` y 5–6 documentos pequeños el coste es de unos pocos céntimos y tarda <1 min.
+
+#### 3. Retriever GraphRAG y agente Q&A
+
+Crea `asistente_graphrag.py`. Usaremos **`VectorCypherRetriever`** — combina búsqueda vectorial sobre chunks con una *traversal* Cypher que recupera el contexto del grafo vecino (entidades y relaciones):
+
+```python
+import os
+import neo4j
+from dotenv import load_dotenv
+from neo4j_graphrag.embeddings import OpenAIEmbeddings
+from neo4j_graphrag.llm import OpenAILLM
+from neo4j_graphrag.retrievers import VectorCypherRetriever
+from neo4j_graphrag.generation import GraphRAG
+
+load_dotenv()
+
+driver = neo4j.GraphDatabase.driver(
+    os.environ["NEO4J_URI"],
+    auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
+)
+
+# Traversal: para cada chunk recuperado, devolvemos también las entidades
+# extraídas del mismo y sus relaciones inmediatas.
+retrieval_query = """
+MATCH (node)<-[:FROM_CHUNK]-(e)
+OPTIONAL MATCH (e)-[r]-(o)
+RETURN node.text AS chunk_text,
+       collect(DISTINCT e.name)            AS entidades,
+       collect(DISTINCT type(r) + ': ' + coalesce(o.name,'')) AS relaciones
+"""
+
+retriever = VectorCypherRetriever(
+    driver=driver,
+    index_name="chunk_embeddings",
+    retrieval_query=retrieval_query,
+    embedder=OpenAIEmbeddings(model="text-embedding-3-small"),
+)
+
+llm = OpenAILLM(model_name="gpt-4o-mini", model_params={"temperature": 0.1})
+rag = GraphRAG(retriever=retriever, llm=llm)
+
+if __name__ == "__main__":
+    preguntas = [
+        "¿Cuántos días de teletrabajo se permiten y qué requisitos tiene?",
+        "¿Qué pasos hay que seguir para solicitar formación y quién lo gestiona?",
+        "¿Qué políticas afectan a un empleado que pide vacaciones y teletrabajo a la vez?",
+    ]
+    for q in preguntas:
+        print(f"\nQ: {q}")
+        respuesta = rag.search(query_text=q, retriever_config={"top_k": 4})
+        print(f"A: {respuesta.answer}")
+
+    driver.close()
+```
+
+#### 4. Comparación cualitativa (parte evaluable del extra)
+
+En el `README.md` del repositorio incluye una **tabla comparativa** con al menos 3 preguntas, mostrando la respuesta del **Vector RAG base** vs la del **GraphRAG con Neo4j**:
+
+| Pregunta | Vector RAG | GraphRAG (Neo4j) | Comentario |
+|----------|------------|------------------|------------|
+| *Pregunta factual simple* | ✅ correcta | ✅ correcta | Vector RAG es suficiente |
+| *Pregunta multi-hop (combina 2 documentos)* | ⚠️ parcial | ✅ completa | El grafo permite enlazar entidades entre docs |
+| *Pregunta estructurada (conteo / agregación)* | ❌ inventa | ✅ correcta | Cypher permite agregaciones exactas |
+
+Acompáñalo con **una o dos capturas del grafo en Neo4j Browser** (`MATCH (n) RETURN n LIMIT 100`) y una breve reflexión sobre *cuándo* merece la pena la complejidad añadida de GraphRAG.
+
+> **Tip:** si te quedas sin tiempo, basta con que GraphRAG funcione sobre **un único documento** (p. ej. `politicas_rrhh.txt`) y comparar 2-3 preguntas. La rúbrica valora que el pipeline esté operativo y la comparación sea honesta, no la cantidad de datos.
+
 ---
 
 ## Paso 3: Construcción del Agente RAG (25 min)
