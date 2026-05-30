@@ -120,7 +120,7 @@
 | **Unidad** | 5 - RAG y Bases Vectoriales |
 | **Tipo** | Práctica individual |
 | **Duración estimada** | 120 minutos |
-| **Entrega** | Archivo ZIP con workflow n8n (JSON) o código Python + documentación |
+| **Entrega** | Repositorio **público** de GitHub con workflow n8n (JSON) o código Python + documentación |
 | **Fecha límite** | Según calendario del curso |
 
 ---
@@ -425,6 +425,49 @@ if __name__ == "__main__":
 ```
 
 > **Conexión con la teoría:** El `RecursiveCharacterTextSplitter` divide el texto intentando respetar los separadores naturales (párrafos, líneas, frases) en ese orden de prioridad. El `chunk_overlap=30` asegura que no se pierda contexto en los límites entre chunks, tal como se explicó en la sesión teórica sobre estrategias de chunking.
+
+### Ingesta opcional desde Google Drive
+
+Como **alternativa opcional** a la lectura desde disco local, puedes implementar la ingesta directamente desde una **carpeta compartida de Google Drive**. Esto se acerca más a un escenario empresarial real, donde los documentos viven en un almacén corporativo (Drive, SharePoint, S3, etc.) y no en el equipo del desarrollador.
+
+**Opción A - n8n con Google Drive:**
+
+1. Crea una carpeta en Google Drive (por ejemplo `TechCorp-Docs`) y sube los archivos `.txt` o `.pdf` de prueba
+2. En n8n, sustituye el nodo de lectura local por:
+   - Nodo **"Google Drive"** (operación `List` o `Search` sobre la carpeta indicada)
+   - Nodo **"Google Drive"** (operación `Download`) para obtener el contenido de cada archivo
+3. (Opcional) Nodo **"Extract from File"** si los documentos son PDF o DOCX
+4. Conecta la salida con el **Text Splitter** y continúa el flujo habitual hasta Pinecone
+5. Configura una credencial **OAuth2 de Google Drive** en n8n (consulta la documentación oficial)
+
+**Flujo con Google Drive:**
+
+```
+[Manual Trigger] → [Google Drive: List Files] → [Google Drive: Download]
+                 → [Extract from File] → [Text Splitter] → [Embeddings] → [Pinecone Insert]
+```
+
+**Opción B - LangChain (Python) con Google Drive:**
+
+Usa el loader oficial `GoogleDriveLoader` de `langchain-google-community`:
+
+```python
+# pip install langchain-google-community[drive]
+from langchain_google_community import GoogleDriveLoader
+
+loader = GoogleDriveLoader(
+    folder_id="<ID_DE_LA_CARPETA_DRIVE>",   # tomar de la URL de la carpeta
+    credentials_path="credentials.json",     # OAuth2 desde Google Cloud Console
+    token_path="token.json",
+    recursive=False,
+    file_types=["document", "pdf"],
+)
+documentos = loader.load()
+```
+
+> **Importante:** No subas `credentials.json` ni `token.json` al repositorio. Añádelos a `.gitignore` e incluye un `credentials.example.json` o instrucciones en el `README.md` para que cualquiera pueda regenerarlos.
+
+**Bonificación asociada:** ver sección de bonificaciones — la ingesta funcional desde Google Drive cuenta como mejora valorada.
 
 ---
 
@@ -776,41 +819,68 @@ Describe al menos 3 mejoras que implementarías en una versión futura:
 | **Caso negativo** | El sistema no inventa información cuando la pregunta no tiene respuesta en los documentos | **1.5** |
 | **TOTAL** | | **10** |
 
-### Bonificación (hasta +1 punto adicional)
+### Bonificaciones (hasta +2 puntos adicionales, acumulables)
 
 | Bonificación | Descripción | Puntos extra |
 |--------------|-------------|--------------|
-| Canal externo | Despliegue en **Telegram** (n8n) o interfaz web con **Streamlit/Gradio** (Python) | **+1** |
+| Canal externo | Despliegue en **Telegram** (n8n) o interfaz web con **Streamlit/Gradio** (Python) | **+0,5** |
+| Ingesta desde Google Drive | Pipeline de ingesta funcional que lee documentos desde una carpeta de **Google Drive** (en lugar de disco local), con credenciales OAuth2 documentadas en el `README.md` | **+0,5** |
+| GraphRAG con Neo4j | Implementar el sistema (o un segundo pipeline comparativo) usando **GraphRAG sobre Neo4j**: extracción de entidades y relaciones desde los documentos, construcción del grafo con `Neo4jGraph` / `neo4j-graphrag`, y *retriever* tipo `VectorRetriever` o `VectorCypherRetriever` siguiendo lo visto en la **sesión 3**. Incluir comparación cualitativa de respuestas frente al Vector RAG base | **+1** |
+
+> **Cómo justificar las bonificaciones:** documenta cada extra en el `README.md` del repositorio con capturas, fragmentos de código relevantes y una breve reflexión sobre qué aporta frente a la versión base.
 
 ---
 
 ## Formato y Proceso de Entrega
 
-### Nombre del Archivo
+La entrega se realiza mediante un **repositorio público de GitHub**. No se aceptan ZIPs ni enlaces a Drive/Dropbox.
+
+### Nombre del Repositorio
+
+Usa un nombre descriptivo, por ejemplo:
 
 ```
-Apellido_Nombre_U5_Practica.zip
+apellido-nombre-ml2-u5-rag
 ```
 
-### Contenido del ZIP
+### Estructura recomendada del repositorio
+
+```
+apellido-nombre-ml2-u5-rag/
+├── README.md                  ← documento de arquitectura (ver más abajo)
+├── .gitignore                 ← debe ignorar .env, credentials.json, token.json, chroma_db/, __pycache__/
+├── .env.example               ← variables de entorno sin valores reales
+├── documentos/                ← documentos .txt de prueba (o referencia a la carpeta de Drive)
+├── capturas/                  ← imágenes del sistema en funcionamiento
+├── workflows/                 ← (Opción A) JSON exportado de los workflows de n8n
+│   ├── ingesta.json
+│   └── agente.json
+└── src/                       ← (Opción B) código Python
+    ├── ingesta.py
+    ├── asistente.py
+    └── requirements.txt
+```
+
+### Contenido obligatorio del repositorio
 
 1. **Sistema RAG:**
-   - **Opción A (n8n):** Archivos JSON exportados de los workflows (ingesta + agente)
-   - **Opción B (Python):** Código fuente completo (`ingesta.py`, `asistente.py`, `requirements.txt`, `.env.example`)
-2. **Documentos de prueba:** Carpeta `documentos/` con los archivos `.txt` utilizados
-3. **Capturas de pantalla:** Evidencias del sistema funcionando (mínimo 5 consultas + caso negativo)
-4. **Documento de arquitectura:** PDF o Word con la documentación del proyecto (arquitectura, decisiones técnicas, ejemplos, mejoras propuestas)
+   - **Opción A (n8n):** Archivos JSON exportados de los workflows (ingesta + agente) dentro de `workflows/`
+   - **Opción B (Python):** Código fuente completo (`ingesta.py`, `asistente.py`, `requirements.txt`, `.env.example`) dentro de `src/`
+2. **Documentos de prueba:** Carpeta `documentos/` con los archivos `.txt` utilizados (o, si usas Google Drive, una referencia a la carpeta compartida y unos cuantos de ejemplo)
+3. **Capturas de pantalla:** Carpeta `capturas/` con evidencias del sistema funcionando (mínimo 5 consultas + caso negativo)
+4. **`README.md` como documento de arquitectura:** debe contener todo lo pedido en el *Paso 6* (arquitectura, decisiones técnicas, ejemplos de funcionamiento, mejoras propuestas) y, si procede, la documentación de las bonificaciones (Google Drive, Neo4j/GraphRAG, canal externo)
 
-> **Importante:** No incluyas la API Key real en la entrega. Si usas Python, incluye un archivo `.env.example` con el formato pero sin la clave.
+> **Importante — secretos:** **no** subas al repositorio API Keys reales ni archivos `credentials.json` / `token.json`. Usa siempre `.env.example` y añade los archivos sensibles a `.gitignore`. Si por error has hecho push de una clave, **revócala** y rota el secreto antes de entregar.
 
 ### Proceso de Entrega
 
 1. Verifica que el sistema funciona correctamente ejecutando las 5 consultas de prueba
 2. Exporta los workflows (n8n) o verifica que el código se ejecuta en un entorno limpio (Python)
-3. Prepara el documento de arquitectura con capturas y reflexiones
-4. Comprime todo en un archivo ZIP con el nombre indicado
-5. Sube el archivo en Blackboard antes de la fecha límite
-6. Verifica que la entrega se ha realizado correctamente
+3. Completa el `README.md` con la documentación, capturas y reflexiones
+4. Crea un **repositorio público** en GitHub con la estructura indicada y haz `push` del contenido
+5. Comprueba que el repo se ve correctamente desde una ventana de incógnito (acceso público, README renderizado, sin secretos)
+6. Entrega la **URL pública del repositorio** (`https://github.com/usuario/apellido-nombre-ml2-u5-rag`) en Blackboard antes de la fecha límite
+7. **No modifiques** el repositorio después de la fecha de entrega: se evaluará el último commit anterior a esa fecha
 
 ---
 
